@@ -81,3 +81,5 @@ def get_data():
 
 
 
+x = get_data()
+print(x)
