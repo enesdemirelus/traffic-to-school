@@ -1,6 +1,8 @@
 import os
 import requests
 from dotenv import load_dotenv
+import csv
+from datetime import datetime
 
 load_dotenv()
 API_KEY = os.getenv("GOOGLE_MAPS_API")
@@ -81,5 +83,25 @@ def get_data():
 
 
 
-x = get_data()
-print(x)
+if __name__ == "__main__":
+    try:
+        hl, hlo, lh, loh = get_data()
+    except Exception as e:
+        with open("error.log", "a") as f:
+            f.write(f"{datetime.now().isoformat()} FAILED: {e}\n")
+        raise SystemExit(1)
+
+    now = datetime.now()
+    date_str = now.strftime("%Y-%m-%d")
+    time_str = now.strftime("%H:%M")
+
+    row = [date_str, time_str, hl, hlo, lh, loh]
+
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "commute_log.csv")
+    file_exists = os.path.exists(path)
+
+    with open(path, "a", newline="") as f:
+        w = csv.writer(f)
+        if not file_exists:
+            w.writerow(["date", "time", "home_to_lpc", "home_to_loop", "lpc_to_home", "loop_to_home"])
+        w.writerow(row)
