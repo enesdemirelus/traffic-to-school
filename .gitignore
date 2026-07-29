@@ -1,1 +1,8 @@
 .env
+venv/
+__pycache__/
+*.pyc
+cron.log
+error.log
+.claude/settings.local.json*
+
